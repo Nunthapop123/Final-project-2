@@ -15,15 +15,35 @@ class BasePage(ctk.CTkFrame):
 class AnalyzePage(BasePage):
     def __init__(self, parent, *args, **kwargs):
         super().__init__(parent, *args, **kwargs)
-        label = ctk.CTkLabel(self, text="Analyze Page",font=ctk.CTkFont(size=20,weight='bold'))
-        label.pack(pady=20,anchor='nw')
+        self.selected_graph = ctk.StringVar()
+        title = ctk.CTkLabel(self, text='Analyze Page', font=ctk.CTkFont(size=30, weight='bold'))
+        title.grid(pady=20)
+
+        self.grid_columnconfigure(2, weight=1)
+
+        graph_type_label = ctk.CTkLabel(self, text='Graph Type', font=ctk.CTkFont(size=14, weight='bold'))
+        graph_type_label.grid(row=1, column=0, padx=10, pady=5)
+
+        self.graph_type = ctk.CTkComboBox(self, state='readonly',
+                                          values=['Descriptive statistics', 'Correlation',
+                                                  'Histogram', 'Bar graph', 'Pie graph'])
+        self.graph_type.grid(row=2, column=0, padx=10, pady=5)
+
+        attribute_label = ctk.CTkLabel(self, text='Attribute', font=ctk.CTkFont(size=14, weight='bold'))
+        attribute_label.grid(row=1, column=1, padx=10, pady=5)
+
+        self.attribute = ctk.CTkComboBox(self, state='readonly', values=['1', '2', '3'])
+        self.attribute.grid(row=2, column=1, padx=10, pady=5)
+
+        compute_button = ctk.CTkButton(self, text='Compute', font=ctk.CTkFont(size=14, weight='bold'))
+        compute_button.grid(row=2, column=2, padx=25, sticky='e')
 
 
 class MoreinfoPage(BasePage):
     def __init__(self, parent, *args, **kwargs):
         super().__init__(parent, *args, **kwargs)
-        label = ctk.CTkLabel(self, text="Moreinfo Page", font=ctk.CTkFont(size=20,weight='bold'))
-        label.pack(pady=20,anchor='nw')
+        label = ctk.CTkLabel(self, text="Moreinfo Page", font=ctk.CTkFont(size=20, weight='bold'))
+        label.pack(pady=20, anchor='nw')
 
 
 class App(ctk.CTk):
@@ -43,6 +63,7 @@ class App(ctk.CTk):
         self.sidebar_frame = ctk.CTkFrame(self, width=140, corner_radius=0)
         self.sidebar_frame.grid(row=0, column=0, rowspan=4, sticky="nsew")
         self.sidebar_frame.grid_rowconfigure(4, weight=1)
+
         self.logo_label = ctk.CTkLabel(self.sidebar_frame, text="Seasonal Trends",
                                        font=ctk.CTkFont(size=35, weight="bold"))
         self.logo_label.grid(row=0, column=0, padx=20, pady=40)
