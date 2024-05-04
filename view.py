@@ -1,6 +1,7 @@
 import customtkinter as ctk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from model import SeasonalTrendModel
+import matplotlib.pyplot as plt
 
 
 class BasePage(ctk.CTkFrame):
@@ -17,22 +18,27 @@ class BasePage(ctk.CTkFrame):
 class AnalyzePage(BasePage):
     def __init__(self, parent, *args, **kwargs):
         super().__init__(parent, *args, **kwargs)
+        self.selected_season = ctk.StringVar()
         self.selected_graph = ctk.StringVar()
         self.selected_attribute = ctk.StringVar()
+        self.selected_category = ctk.StringVar
         self.create_layout()
 
     def create_layout(self):
         title = ctk.CTkLabel(self, text='Analyze Page', font=ctk.CTkFont(size=30, weight='bold'))
         title.grid(row=0, column=0, columnspan=3, padx=10, pady=15, stick='nw')
 
-        self.grid_columnconfigure(2, weight=1)
+        self.grid_columnconfigure(2, weight=0)
+        self.grid_columnconfigure(3, weight=1)
 
         graph_type_label = ctk.CTkLabel(self, text='Graph Type', font=ctk.CTkFont(size=14, weight='bold'))
         graph_type_label.grid(row=1, column=0, padx=10, pady=2, sticky='w')
 
         self.graph_type = ctk.CTkComboBox(self, state='readonly',
                                           values=['Descriptive statistics', 'Correlation',
-                                                  'Histogram', 'Bar graph', 'Pie graph'], variable=self.selected_graph)
+                                                  'Histogram', 'Bar graph', 'Pie graph'],
+                                          variable=self.selected_graph,
+                                          command=self.update_attribute)
         self.graph_type.grid(row=2, column=0, padx=10, pady=2, sticky='w')
 
         attribute_label = ctk.CTkLabel(self, text='Attribute', font=ctk.CTkFont(size=14, weight='bold'))
@@ -42,13 +48,16 @@ class AnalyzePage(BasePage):
                                          variable=self.selected_attribute)
         self.attribute.grid(row=2, column=1, padx=5, pady=2)
 
-        compute_button = ctk.CTkButton(self, text='Compute', font=ctk.CTkFont(size=14, weight='bold'),
-                                       command=self.compute_graph_handler)
-        compute_button.grid(row=2, column=2, padx=20, sticky='e')
+        self.compute_button = ctk.CTkButton(self, text='Compute', font=ctk.CTkFont(size=14, weight='bold'),
+                                            command=self.compute_graph_handler)
+        self.compute_button.grid(row=2, column=3, padx=20, sticky='e')
 
         self.output_frame = ctk.CTkFrame(self, fg_color='transparent')
-        self.output_frame.grid(padx=15, pady=15, row=3, column=0, columnspan=3, sticky="nsew")
+        self.output_frame.grid(padx=15, pady=15, row=3, column=0, columnspan=4, sticky="nsew")
         self.grid_rowconfigure(3, weight=1)
+
+        self.working = ctk.CTkLabel(self.output_frame,text='Histogram is working for now :)', font=ctk.CTkFont(size=15, weight='bold'))
+        self.working.grid(row=0,column=1)
 
     def create_histogram(self):
         selected_attribute = self.selected_attribute.get()
@@ -61,8 +70,40 @@ class AnalyzePage(BasePage):
         canvas.get_tk_widget().pack(fill='both', expand=True)
         canvas.get_tk_widget().place(relx=0, rely=0, relwidth=1, relheight=1)
 
+    # def create_pie(self):
+    #     selected_season = self.selected_season.get()
+    #     for widget in self.output_frame.winfo_children():
+    #         widget.destroy()
+    #     data_model = SeasonalTrendModel()
+    #     pie_plot = data_model.create_story_pie(selected_season)
+    #     canvas = FigureCanvasTkAgg(pie_plot, master=self.output_frame)
+    #     canvas.draw()
+    #     canvas.get_tk_widget().pack(fill='both', expand=True)
+    #     canvas.get_tk_widget().place(relx=0, rely=0, relwidth=1, relheight=1)
+
     def compute_graph_handler(self):
         self.create_histogram()
+
+    def update_attribute(self, choice):
+        graph = self.selected_graph.get()
+        if graph == 'Descriptive statistics':
+            pass
+        elif graph == 'Correlation':
+            self.attribute.configure(values=['Purchase Amount (USD)', 'Review Rating'])
+            season_label = ctk.CTkLabel(self, text='Season',
+                                        font=ctk.CTkFont(size=14, weight='bold'))
+            season_label.grid(row=1, column=3, padx=10, pady=2, sticky='w')
+            self.seasons = ctk.CTkComboBox(self, state='readonly',
+                                           values=['Spring', 'Summer', 'Fall', 'Winter'],
+                                           variable=self.selected_season)
+            self.seasons.grid(row=2, column=3, padx=10, pady=2, sticky='w')
+        elif graph == 'Histogram':
+            self.attribute.configure(values=['Purchase Amount (USD)'])
+        elif graph == 'Bar graph':
+            pass
+        elif graph == 'Pie graph':
+            pass
+            # self.compute_button.configure(command=self.create_pie())
 
 
 class MoreinfoPage(BasePage):
@@ -71,6 +112,9 @@ class MoreinfoPage(BasePage):
         title = ctk.CTkLabel(self, text='Moreinfo Page', font=ctk.CTkFont(size=30, weight='bold'))
         title.grid(padx=10, pady=45)
         self.grid_columnconfigure(2, weight=1)
+
+        graph_type_label = ctk.CTkLabel(self, text='Working.........', font=ctk.CTkFont(size=30, weight='bold'))
+        graph_type_label.grid(row=1, column=0, padx=10, pady=2, sticky='w')
 
 
 class App(ctk.CTk):
