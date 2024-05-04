@@ -11,9 +11,9 @@ class SeasonalTrendModel:
     def get_columns(self):
         return list(self.df.columns)
 
-    # def filter_season_data(self, season):
-    #     season_data = self.df[self.df['Season'] == season].copy()
-    #     return season_data
+    def filter_season_data(self, season):
+        season_data = self.df[self.df['Season'] == season].copy()
+        return season_data
 
     def create_story_histogram(self, columns):
         ax = sns.histplot(data=self.df, x=columns, hue='Season', kde=True, multiple='stack')
@@ -30,7 +30,18 @@ class SeasonalTrendModel:
         plt.axis('equal')
         return plt.figure
 
+    def create_descriptive(self, season):
+        if season not in self.df['Season'].unique():
+            print(f"Error: Season '{season}' not found in the data.")
+            return None
+
+        season_data = self.filter_season_data(season)
+        data = season_data['Purchase Amount (USD)']
+        descriptive = data.describe()
+        return descriptive
+
 
 if __name__ == '__main__':
     a = SeasonalTrendModel()
     print(a.get_columns())
+    print(a.filter_season_data('Summer').head())
