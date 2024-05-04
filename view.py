@@ -49,8 +49,7 @@ class AnalyzePage(BasePage):
                                          variable=self.selected_attribute)
         self.attribute.grid(row=2, column=1, padx=5, pady=2)
 
-        self.compute_button = ctk.CTkButton(self, text='Compute', font=ctk.CTkFont(size=14, weight='bold'),
-                                            command=self.compute_graph_handler)
+        self.compute_button = ctk.CTkButton(self, text='Compute', font=ctk.CTkFont(size=14, weight='bold'))
         self.compute_button.grid(row=2, column=3, padx=20, sticky='e')
 
         self.output_frame = ctk.CTkFrame(self, fg_color='transparent')
@@ -61,9 +60,9 @@ class AnalyzePage(BasePage):
         self.working.grid(row=0,column=1)
 
     def season_combobox_layout(self):
-        season_label = ctk.CTkLabel(self, text='Season',
+        self.season_label = ctk.CTkLabel(self, text='Season',
                                     font=ctk.CTkFont(size=14, weight='bold'))
-        season_label.grid(row=1, column=3, padx=10, pady=2, sticky='w')
+        self.season_label.grid(row=1, column=3, padx=10, pady=2, sticky='w')
         self.seasons = ctk.CTkComboBox(self, state='readonly',
                                        values=['Spring', 'Summer', 'Fall', 'Winter'],
                                        variable=self.selected_season)
@@ -109,11 +108,15 @@ class AnalyzePage(BasePage):
         if graph == 'Descriptive statistics':
             self.attribute.configure(values=['Purchase Amount (USD)'])
             self.season_combobox_layout()
+            self.compute_button.configure(command=self.create_descriptive)
         elif graph == 'Correlation':
             self.attribute.configure(values=['Purchase Amount (USD)', 'Review Rating'])
             self.season_combobox_layout()
         elif graph == 'Histogram':
+            self.season_label.grid_forget()
+            self.seasons.grid_forget()
             self.attribute.configure(values=['Purchase Amount (USD)'])
+            self.compute_button.configure(command=self.create_histogram)
         elif graph == 'Bar graph':
             pass
         elif graph == 'Pie graph':
