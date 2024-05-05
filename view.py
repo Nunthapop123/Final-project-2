@@ -83,6 +83,7 @@ class AnalyzePage(BasePage):
         canvas.draw()
         canvas.get_tk_widget().pack(fill='both', expand=True)
         canvas.get_tk_widget().place(relx=0, rely=0, relwidth=1, relheight=1)
+        plt.close(histogram_plot)
 
     # def create_pie(self):
     #     selected_season = self.selected_season.get()
