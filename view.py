@@ -24,6 +24,7 @@ class AnalyzePage(BasePage):
         self.selected_category = ctk.StringVar()
         self.grid_columnconfigure(2, weight=0)
         self.grid_columnconfigure(3, weight=1)
+        self.grid_rowconfigure(3, weight=1)
         self.create_layout()
         self.season_combobox = None
         self.category_combobox = None
@@ -54,7 +55,6 @@ class AnalyzePage(BasePage):
 
         self.output_frame = ctk.CTkFrame(self, fg_color='transparent')
         self.output_frame.grid(padx=15, pady=15, row=3, column=0, columnspan=4, sticky="nsew")
-        self.grid_rowconfigure(3, weight=1)
 
     def season_combobox_layout(self):
         if self.selected_graph.get() in ['Descriptive statistics', 'Correlation', 'Pie graph']:
@@ -183,6 +183,7 @@ class MoreinfoPage(BasePage):
         super().__init__(parent, *args, **kwargs)
         self.textfile = 'description.txt'
         self.selected_item = ctk.StringVar()
+        self.toplevel_window = None
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(2, weight=3)
         self.page_layout()
@@ -191,7 +192,7 @@ class MoreinfoPage(BasePage):
         title = ctk.CTkLabel(self, text='Moreinfo Page', font=ctk.CTkFont(size=30, weight='bold'))
         title.grid(row=0, column=0, padx=10, pady=45, sticky='nw')
         about = ctk.CTkLabel(self, text='About Project', font=ctk.CTkFont(size=20, weight='bold'))
-        about.grid(row=0, column=0, padx=10, pady=(120, 0), sticky='nw')
+        about.grid(row=0, column=0, padx=10, pady=(90, 0), sticky='nw')
         self.upper_frame = ctk.CTkFrame(self)
         self.upper_frame.grid(row=1, padx=10, sticky='new')
 
@@ -217,8 +218,15 @@ class MoreinfoPage(BasePage):
         self.graph_frame = ctk.CTkFrame(self, fg_color='transparent')
         self.graph_frame.grid(row=2, column=0, pady=70, columnspan=3, rowspan=3, sticky="nsew")
 
-        self.grap_button = ctk.CTkButton(self, text='More graph')
-        self.grap_button.grid(row=3, column=0, sticky='ns', pady=(0, 10), padx=10, columnspan=3)
+        self.grap_button = ctk.CTkButton(self, text='More graph',command=self.open_toplevel)
+        self.grap_button.grid(row=3, column=0, sticky='nsew', pady=(0, 10), padx=10, columnspan=3)
+
+
+    def open_toplevel(self):
+        if self.toplevel_window is None or not self.toplevel_window.winfo_exists():
+            self.toplevel_window = MoreGraph(self)
+        else:
+            self.toplevel_window.focus()
 
     def create_default_bar(self):
         selected_item = self.selected_item.get()
@@ -240,13 +248,18 @@ class MoreinfoPage(BasePage):
             read_text = t.read()
         return read_text
 
+class MoreGraph(ctk.CTkToplevel):
+    def __init__(self, parent, *args, **kwargs):
+        super().__init__(parent, *args, **kwargs)
+        self.geometry("800x600")
 
-
+        self.label = ctk.CTkLabel(self,text='Toplevel')
+        self.label.pack(padx=20,pady=20)
 class App(ctk.CTk):
     def __init__(self):
         super().__init__()
         self.title("Seasonal Trends")
-        self.geometry(f"{1280}x{720}")
+        self.geometry("1280x720")
         ctk.set_appearance_mode("Dark")
         ctk.set_default_color_theme("custom-theme.json")
         self.grid_columnconfigure(1, weight=1)
