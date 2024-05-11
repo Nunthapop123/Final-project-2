@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 
 class BasePage(ctk.CTkFrame):
     """A base class representing a page in the application."""
+
     def __init__(self, parent, *args, **kwargs):
         """Initialize the BasePage"""
         super().__init__(parent, *args, **kwargs)
@@ -21,9 +22,11 @@ class BasePage(ctk.CTkFrame):
 
 class AnalyzePage(BasePage):
     """A class representing the Analyze Page in the application."""
+
     def __init__(self, parent, *args, **kwargs):
         """Initialize the AnalyzePage."""
         super().__init__(parent, *args, **kwargs)
+        self.configure(fg_color='#424769')
         self.selected_season = ctk.StringVar()
         self.selected_graph = ctk.StringVar()
         self.selected_attribute = ctk.StringVar()
@@ -223,9 +226,11 @@ class AnalyzePage(BasePage):
 
 class MoreinfoPage(BasePage):
     """A class representing the Moreinfo Page in the application."""
+
     def __init__(self, parent, *args, **kwargs):
         """Initialize the MoreinfoPage."""
         super().__init__(parent, *args, **kwargs)
+        self.configure(fg_color='#424769')
         self.textfile = 'description.txt'
         self.selected_item = ctk.StringVar()
         self.toplevel_window = None
@@ -302,11 +307,13 @@ class MoreinfoPage(BasePage):
 
 class MoreGraph(ctk.CTkToplevel):
     """A class representing the MoreGraph Window in the application."""
+
     def __init__(self, parent, *args, **kwargs):
         """Initialize the MoreGraph window."""
         super().__init__(parent, *args, **kwargs)
         self.title('MoreGraphWindow')
         self.geometry("1024x768")
+        self.configure(fg_color='#424769')
         self.selected_season = ctk.StringVar()
         self.selected_graph = ctk.StringVar()
         self.selected_attribute = ctk.StringVar()
@@ -510,6 +517,7 @@ class MoreGraph(ctk.CTkToplevel):
 
 class App(ctk.CTk):
     """A class representing the main application."""
+
     def __init__(self):
         super().__init__()
         self.title("Seasonal Trends")
@@ -523,7 +531,7 @@ class App(ctk.CTk):
 
     def setup_sidebar(self):
         """Setup the sidebar with buttons."""
-        self.sidebar_frame = ctk.CTkFrame(self, width=140, corner_radius=0, fg_color="transparent")
+        self.sidebar_frame = ctk.CTkFrame(self, width=140, corner_radius=0, fg_color="#2D3250")
         self.sidebar_frame.grid(row=0, column=0, rowspan=4, sticky="nsew")
         self.sidebar_frame.grid_rowconfigure(4, weight=1)
 
@@ -534,12 +542,14 @@ class App(ctk.CTk):
         self.pages = {}
 
         self.analyze_page_button = ctk.CTkButton(self.sidebar_frame, text="Storytelling",
+                                                 font=ctk.CTkFont(weight='bold'),
                                                  command=lambda p=AnalyzePage: self.show_page(p))
-        self.analyze_page_button.grid(row=1, column=0, padx=20, pady=30)
+        self.analyze_page_button.grid(row=1, column=0, padx=20, pady=30, ipadx=80)
 
         self.moreinfo_page_button = ctk.CTkButton(self.sidebar_frame, text="Moreinfo",
+                                                  font=ctk.CTkFont(weight='bold'),
                                                   command=lambda p=MoreinfoPage: self.show_page(p))
-        self.moreinfo_page_button.grid(row=2, column=0, padx=20, pady=5)
+        self.moreinfo_page_button.grid(row=2, column=0, padx=20, pady=5, ipadx=80)
 
         self.exit_button = ctk.CTkButton(self.sidebar_frame, text='Exit', command=self.exit_button_event)
         self.exit_button.grid(row=5, column=0, padx=20, pady=35)
