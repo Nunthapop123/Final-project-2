@@ -1,0 +1,4 @@
+☆ This project “Seasonal Trends” aims to analyze the dataset to see seasonal sales and how items
+in each category have been selling in that season by visualizing it
+using graphs such as Histograms, Pie charts, or Bar graphs and providing detailed information
+To help users with decision-making in restocking or making some promotion of it.
