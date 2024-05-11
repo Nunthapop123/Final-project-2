@@ -53,6 +53,8 @@ class SeasonalTrendModel:
         ax.set_title(f'Sales of {category} Items in {season} Season')
         ax.set_xlabel(f'{category} Item')
         ax.set_ylabel('Number of Sales')
+        for tick in ax.get_xticklabels():
+            tick.set_rotation(45)
         return fig
 
     def create_more_info_bar(self, item):
@@ -63,6 +65,8 @@ class SeasonalTrendModel:
         ax.set_title(f'Number of {item} sold in Different Seasons')
         ax.set_xlabel(f'Season')
         ax.set_ylabel(f'Number of {item} Sold')
+        for tick in ax.get_xticklabels():
+            tick.set_rotation(0)
         return fig
 
 
