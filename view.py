@@ -5,18 +5,24 @@ import matplotlib.pyplot as plt
 
 
 class BasePage(ctk.CTkFrame):
+    """A base class representing a page in the application."""
     def __init__(self, parent, *args, **kwargs):
+        """Initialize the BasePage"""
         super().__init__(parent, *args, **kwargs)
 
     def show(self):
+        """Display the page."""
         self.grid(row=0, column=1, rowspan=4, sticky="nsew")
 
     def hide(self):
+        """Hide the page."""
         self.grid_forget()
 
 
 class AnalyzePage(BasePage):
+    """A class representing the Analyze Page in the application."""
     def __init__(self, parent, *args, **kwargs):
+        """Initialize the AnalyzePage."""
         super().__init__(parent, *args, **kwargs)
         self.selected_season = ctk.StringVar()
         self.selected_graph = ctk.StringVar()
@@ -32,6 +38,7 @@ class AnalyzePage(BasePage):
         self.attribute2 = None
 
     def create_layout(self):
+        """Create the layout for the Analyze Page."""
         title = ctk.CTkLabel(self, text='Storytelling Page', font=ctk.CTkFont(size=30, weight='bold'))
         title.grid(row=0, column=0, columnspan=3, padx=10, pady=(42, 0), stick='nw')
 
@@ -59,6 +66,7 @@ class AnalyzePage(BasePage):
         self.output_frame.grid(padx=15, pady=15, row=3, column=0, columnspan=4, sticky="nsew")
 
     def season_combobox_layout(self):
+        """Dynamically adjust the season combobox based on the selected graph type."""
         if self.selected_graph.get() in ['Descriptive statistics', 'Correlation', 'Pie graph']:
             if self.season_combobox is None:
                 self.season_label = ctk.CTkLabel(self, text='Season',
@@ -89,6 +97,7 @@ class AnalyzePage(BasePage):
             self.clear_combo()
 
     def correlation_combobox_layout(self):
+        """Dynamically adjust the attribute2 combobox for correlation graph."""
         if self.attribute2 is None:
             self.attribute2_label = ctk.CTkLabel(self, text='Attribute2',
                                                  font=ctk.CTkFont(size=14, weight='bold'))
@@ -100,6 +109,7 @@ class AnalyzePage(BasePage):
             self.attribute2.grid(row=2, column=3, padx=165, pady=2, sticky='w')
 
     def create_histogram(self):
+        """Create a histogram based on selected attribute."""
         selected_attribute = self.selected_attribute.get()
         for widget in self.output_frame.winfo_children():
             widget.destroy()
@@ -112,6 +122,7 @@ class AnalyzePage(BasePage):
         plt.close(histogram_plot)
 
     def create_pie(self):
+        """Create a pie chart based on selected season."""
         selected_season = self.selected_season.get()
         for widget in self.output_frame.winfo_children():
             widget.destroy()
@@ -124,6 +135,7 @@ class AnalyzePage(BasePage):
         plt.close(pie_plot)
 
     def create_descriptive(self):
+        """Create descriptive statistics based on selected season."""
         selected_season = self.selected_season.get()
         for widget in self.output_frame.winfo_children():
             widget.destroy()
@@ -133,6 +145,7 @@ class AnalyzePage(BasePage):
         label1.grid(row=0, column=1)
 
     def create_bar(self):
+        """Create a bar graph based on selected season and category."""
         selected_season = self.selected_season.get()
         selected_category = self.selected_category.get()
         for widget in self.output_frame.winfo_children():
@@ -146,6 +159,7 @@ class AnalyzePage(BasePage):
         plt.close(bar_plot)
 
     def create_correlation(self):
+        """Create a correlation scatter plot based on selected attributes and season."""
         selected_attribute = self.selected_attribute.get()
         selected_attribute2 = self.selected_attribute2.get()
         selected_season = self.selected_season.get()
@@ -160,6 +174,7 @@ class AnalyzePage(BasePage):
         plt.close(scatter_plot)
 
     def update_attribute(self, choice):
+        """Update the available attributes based on the selected graph type."""
         graph = self.selected_graph.get()
         if graph == 'Descriptive statistics':
             self.clear_combo()
@@ -189,6 +204,7 @@ class AnalyzePage(BasePage):
             self.compute_button.configure(command=self.create_pie)
 
     def clear_combo(self):
+        """Clear combo boxes."""
         self.attribute.set('')
         if self.season_combobox is not None:
             self.selected_season.set('')
@@ -206,7 +222,9 @@ class AnalyzePage(BasePage):
 
 
 class MoreinfoPage(BasePage):
+    """A class representing the Moreinfo Page in the application."""
     def __init__(self, parent, *args, **kwargs):
+        """Initialize the MoreinfoPage."""
         super().__init__(parent, *args, **kwargs)
         self.textfile = 'description.txt'
         self.selected_item = ctk.StringVar()
@@ -216,6 +234,7 @@ class MoreinfoPage(BasePage):
         self.page_layout()
 
     def page_layout(self):
+        """Create the layout for the Moreinfo Page."""
         title = ctk.CTkLabel(self, text='Moreinfo Page', font=ctk.CTkFont(size=30, weight='bold'))
         title.grid(row=0, column=0, padx=10, pady=45, sticky='nw')
         about = ctk.CTkLabel(self, text='About Project', font=ctk.CTkFont(size=20, weight='bold'))
@@ -249,12 +268,14 @@ class MoreinfoPage(BasePage):
         self.grap_button.grid(row=3, column=0, sticky='nsew', pady=(0, 10), padx=10, columnspan=3)
 
     def open_toplevel(self):
+        """Open a new top-level window for additional graphs."""
         if self.toplevel_window is None or not self.toplevel_window.winfo_exists():
             self.toplevel_window = MoreGraph(self)
         else:
             self.toplevel_window.focus()
 
     def create_default_bar(self):
+        """Create a default bar graph based on selected item."""
         selected_item = self.selected_item.get()
         for widget in self.graph_frame.winfo_children():
             widget.destroy()
@@ -267,16 +288,22 @@ class MoreinfoPage(BasePage):
         plt.close(bar_plot)
 
     def plot_graph(self, event):
+        """Plot graph based on selected item."""
         self.create_default_bar()
 
     def read_description(self, text):
+        """Read description from file.
+        :param text: The file path of the description text file.
+        :Returns str: The content of the description text file."""
         with open(text) as t:
             read_text = t.read()
         return read_text
 
 
 class MoreGraph(ctk.CTkToplevel):
+    """A class representing the MoreGraph Window in the application."""
     def __init__(self, parent, *args, **kwargs):
+        """Initialize the MoreGraph window."""
         super().__init__(parent, *args, **kwargs)
         self.title('MoreGraphWindow')
         self.geometry("1024x768")
@@ -294,6 +321,7 @@ class MoreGraph(ctk.CTkToplevel):
         self.attribute2 = None
 
     def create_layout_more_graph(self):
+        """Create the layout for the MoreGraph window."""
         title = ctk.CTkLabel(self, text='More Graph', font=ctk.CTkFont(size=30, weight='bold'))
         title.grid(row=0, column=0, columnspan=3, padx=10, pady=(42, 0), stick='nw')
 
@@ -324,6 +352,7 @@ class MoreGraph(ctk.CTkToplevel):
         self.exit_button.grid(row=3, column=0, padx=20, pady=35, sticky='s')
 
     def season_combobox_layout(self):
+        """Dynamically adjust the season combobox based on the selected graph type."""
         if self.selected_graph.get() in ['Descriptive statistics', 'Correlation', 'Pie graph']:
             if self.season_combobox is None:
                 self.season_label = ctk.CTkLabel(self, text='Season',
@@ -354,6 +383,7 @@ class MoreGraph(ctk.CTkToplevel):
             self.clear_combo()
 
     def correlation_combobox_layout(self):
+        """Dynamically adjust the attribute2 combobox for correlation graph."""
         if self.attribute2 is None:
             self.attribute2_label = ctk.CTkLabel(self, text='Attribute2',
                                                  font=ctk.CTkFont(size=14, weight='bold'))
@@ -365,6 +395,7 @@ class MoreGraph(ctk.CTkToplevel):
             self.attribute2.grid(row=2, column=3, padx=10, pady=2, sticky='w')
 
     def create_histogram_more_graph(self):
+        """Create a histogram based on selected attribute."""
         selected_attribute = self.selected_attribute.get()
         for widget in self.output_frame.winfo_children():
             widget.destroy()
@@ -377,6 +408,7 @@ class MoreGraph(ctk.CTkToplevel):
         plt.close(histogram_plot)
 
     def create_correlation_more_graph(self):
+        """Create a correlation scatter plot based on selected attributes."""
         selected_attribute = self.selected_attribute.get()
         selected_attribute2 = self.selected_attribute2.get()
         for widget in self.output_frame.winfo_children():
@@ -390,6 +422,7 @@ class MoreGraph(ctk.CTkToplevel):
         plt.close(scatter_plot)
 
     def create_pie_more_graph(self):
+        """Create a pie chart based on selected attribute."""
         selected_attribute = self.selected_attribute.get()
         for widget in self.output_frame.winfo_children():
             widget.destroy()
@@ -402,6 +435,7 @@ class MoreGraph(ctk.CTkToplevel):
         plt.close(pie_plot)
 
     def create_descriptive_more_graph(self):
+        """Display descriptive statistics based on selected attribute."""
         selected_attribute = self.selected_attribute.get()
         for widget in self.output_frame.winfo_children():
             widget.destroy()
@@ -411,6 +445,7 @@ class MoreGraph(ctk.CTkToplevel):
         label1.grid(row=0, column=1)
 
     def create_bar_more_graph(self):
+        """Create a bar graph based on selected attribute."""
         selected_attribute = self.selected_attribute.get()
         for widget in self.output_frame.winfo_children():
             widget.destroy()
@@ -423,6 +458,7 @@ class MoreGraph(ctk.CTkToplevel):
         plt.close(bar_plot)
 
     def update_attribute(self, choice):
+        """Update the available attributes based on the selected graph type."""
         graph = self.selected_graph.get()
         if graph == 'Descriptive statistics':
             self.clear_combo()
@@ -451,6 +487,7 @@ class MoreGraph(ctk.CTkToplevel):
             self.compute_button.configure(command=self.create_pie_more_graph)
 
     def clear_combo(self):
+        """Clear combo boxes."""
         self.attribute.set('')
         if self.season_combobox is not None:
             self.selected_season.set('')
@@ -467,10 +504,12 @@ class MoreGraph(ctk.CTkToplevel):
             self.category_combobox = None
 
     def exit_button_event(self):
+        """Event handler for the exit button.Destroys the application window."""
         self.destroy()
 
 
 class App(ctk.CTk):
+    """A class representing the main application."""
     def __init__(self):
         super().__init__()
         self.title("Seasonal Trends")
@@ -483,6 +522,7 @@ class App(ctk.CTk):
         self.setup_sidebar()
 
     def setup_sidebar(self):
+        """Setup the sidebar with buttons."""
         self.sidebar_frame = ctk.CTkFrame(self, width=140, corner_radius=0, fg_color="transparent")
         self.sidebar_frame.grid(row=0, column=0, rowspan=4, sticky="nsew")
         self.sidebar_frame.grid_rowconfigure(4, weight=1)
@@ -508,15 +548,19 @@ class App(ctk.CTk):
         self.show_page(AnalyzePage)
 
     def exit_button_event(self):
+        """Event handler for the exit button.Quits the application."""
         self.quit()
 
     def show_page(self, page_class):
+        """Show the specified page.
+        :param page_class: The class of the page to be displayed."""
         if self.current_page:
             self.current_page.hide()
         self.current_page = page_class(self)
         self.current_page.show()
 
     def run(self):
+        """Run the application."""
         self.mainloop()
 
 
