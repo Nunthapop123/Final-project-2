@@ -8,7 +8,7 @@ class SeasonalTrendModel:
     """A class representing a model for analyzing seasonal shopping trends."""
     def __init__(self):
         """Initialize the SeasonalTrendModel."""
-        self.df = pd.read_csv('shopping_trends_updated.csv')
+        self.df = pd.read_csv('Data/shopping_trends_updated.csv')
 
     def get_columns(self):
         """Get the column names of the DataFrame.
@@ -143,7 +143,7 @@ class SeasonalTrendModel:
         self.df[attribute].value_counts().plot(kind='pie', autopct='%1.1f%%', startangle=90)
 
         ax.set_title(f'{attribute} Distribution')
-        ax.axis('count')
+        ax.axis('equal')
         return fig
 
     def scatter_more_graph(self, attribute1, attribute2):

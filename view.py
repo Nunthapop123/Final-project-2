@@ -489,7 +489,6 @@ class MoreGraph(ctk.CTkToplevel):
             self.compute_button.configure(command=self.create_bar_more_graph)
         elif graph == 'Pie graph':
             self.clear_combo()
-            self.season_combobox_layout()
             self.attribute.configure(values=['Gender', 'Subscription Status', 'Discount Applied', 'Promo Code Used'])
             self.compute_button.configure(command=self.create_pie_more_graph)
 
