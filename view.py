@@ -300,7 +300,7 @@ class MoreinfoPage(BasePage):
         """Read description from file.
         :param text: The file path of the description text file.
         :Returns str: The content of the description text file."""
-        with open(text) as t:
+        with open(text,encoding='utf-8') as t:
             read_text = t.read()
         return read_text
 
