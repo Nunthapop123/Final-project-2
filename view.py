@@ -22,6 +22,8 @@ class AnalyzePage(BasePage):
         self.selected_graph = ctk.StringVar()
         self.selected_attribute = ctk.StringVar()
         self.selected_category = ctk.StringVar()
+        self.grid_columnconfigure(2, weight=0)
+        self.grid_columnconfigure(3, weight=1)
         self.create_layout()
         self.season_combobox = None
         self.category_combobox = None
@@ -29,9 +31,6 @@ class AnalyzePage(BasePage):
     def create_layout(self):
         title = ctk.CTkLabel(self, text='Analyze Page', font=ctk.CTkFont(size=30, weight='bold'))
         title.grid(row=0, column=0, columnspan=3, padx=10, pady=15, stick='nw')
-
-        self.grid_columnconfigure(2, weight=0)
-        self.grid_columnconfigure(3, weight=1)
 
         graph_type_label = ctk.CTkLabel(self, text='Graph Type', font=ctk.CTkFont(size=14, weight='bold'))
         graph_type_label.grid(row=1, column=0, padx=10, pady=2, sticky='w')
@@ -183,16 +182,50 @@ class MoreinfoPage(BasePage):
     def __init__(self, parent, *args, **kwargs):
         super().__init__(parent, *args, **kwargs)
         self.textfile = 'description.txt'
+        self.selected_item = ctk.StringVar()
         self.grid_columnconfigure(2, weight=1)
-        self.grid_rowconfigure(2, weight=1)
-        self.text_layout()
+        self.grid_rowconfigure(0, weight=1)  # Adjusted row weights
+        self.page_layout()
         self.read_description(self.textfile)
 
-    def text_layout(self):
+    def page_layout(self):
         title = ctk.CTkLabel(self, text='Moreinfo Page', font=ctk.CTkFont(size=30, weight='bold'))
-        title.grid(row=0, column=0, padx=10, pady=45, sticky='w')
+        title.grid(row=0, column=0, padx=10, pady=45, sticky='nw')
         about = ctk.CTkLabel(self, text='About Project', font=ctk.CTkFont(size=20, weight='bold'))
-        about.grid(row=0, column=0, padx=10, pady=(100, 0), sticky='w')
+        about.grid(row=0, column=0, padx=10, pady=(100, 0), sticky='nw')
+
+        graph_text = ctk.CTkLabel(self, text='The Default Graph', font=ctk.CTkFont(size=20, weight='bold'))
+        graph_text.grid(row=2, column=0, padx=10, pady=2, sticky='nw')
+        graph_info = ctk.CTkLabel(self, text='A bar graph shows the number of “Items” sold in a different season'
+                                  , font=ctk.CTkFont(size=15, weight='bold'))
+        graph_info.grid(row=3, column=0, padx=10, pady=2, sticky='w')
+
+        item = ctk.CTkLabel(self, text='Select item', font=ctk.CTkFont(size=12, weight='bold'))
+        item.grid(row=2, column=2, padx=(0, 10), pady=2,sticky='ne')
+        self.item_combobox = ctk.CTkComboBox(self, state='readonly',
+                                             values=SeasonalTrendModel().get_items(),
+                                             variable=self.selected_item, command=self.plot_graph)
+        self.item_combobox.grid(row=3, column=2, padx=10, pady=2,sticky='ne')
+
+        # Create a frame for the graph canvas
+        self.graph_frame = ctk.CTkFrame(self, fg_color='transparent')
+        self.graph_frame.grid(row=4, column=0, padx=15, pady=15, columnspan=3, sticky="nsew")
+        self.grid_rowconfigure(4, weight=1)
+
+    def create_default_bar(self):
+        selected_item = self.selected_item.get()
+        for widget in self.graph_frame.winfo_children():
+            widget.destroy()
+        data_model = SeasonalTrendModel()
+        bar_plot = data_model.create_more_info_bar(selected_item)
+        canvas = FigureCanvasTkAgg(bar_plot, master=self.graph_frame)
+        canvas.draw()
+        canvas.get_tk_widget().pack(fill='both', expand=True)
+        canvas.get_tk_widget().place(relx=0, rely=0, relwidth=1, relheight=1)
+        plt.close(bar_plot)
+
+    def plot_graph(self, event):
+        self.create_default_bar()
 
     def read_description(self, text):
         with open(text) as t:

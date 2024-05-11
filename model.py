@@ -11,6 +11,9 @@ class SeasonalTrendModel:
     def get_columns(self):
         return list(self.df.columns)
 
+    def get_items(self):
+        return list(self.df['Item Purchased'].unique())
+
     def filter_season_data(self, season):
         season_data = self.df[self.df['Season'] == season].copy()
         return season_data
@@ -46,12 +49,20 @@ class SeasonalTrendModel:
         category_data = self.df[(self.df['Category'] == category) & (self.df['Season'] == season)]
         category_item_sale = category_data.groupby('Item Purchased').size()
         fig, ax = plt.subplots()
-        category_item_sale.plot(kind='bar',color='skyblue')
+        category_item_sale.plot(kind='bar', color='skyblue')
         ax.set_title(f'Sales of {category} Items in {season} Season')
         ax.set_xlabel(f'{category} Item')
         ax.set_ylabel('Number of Sales')
-        # ax.xticks(rotation=45)
-        # ax.tight_layout()
+        return fig
+
+    def create_more_info_bar(self, item):
+        item_sales = self.df[self.df['Item Purchased'] == item]
+        item_sales_season = item_sales.groupby('Season').size()
+        fig, ax = plt.subplots()
+        item_sales_season.plot(kind='bar', color='skyblue')
+        ax.set_title(f'Number of {item} sold in Different Seasons')
+        ax.set_xlabel(f'Season')
+        ax.set_ylabel(f'Number of {item} Sold')
         return fig
 
 
