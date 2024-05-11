@@ -35,7 +35,7 @@ class SeasonalTrendModel:
         ax.axis('equal')
         return fig
 
-    def create_descriptive(self, season):
+    def create_story_descriptive(self, season):
         if season not in self.df['Season'].unique():
             print(f"Error: Season '{season}' not found in the data.")
             return None
@@ -44,6 +44,15 @@ class SeasonalTrendModel:
         data = season_data['Purchase Amount (USD)']
         descriptive = data.describe()
         return descriptive
+
+    def crete_story_scatter(self, attribute1, attribute2, season):
+        season_df = self.df[self.df['Season'] == season]
+        fig, ax = plt.subplots()
+        ax.scatter(season_df[attribute1], season_df[attribute2], alpha=0.5)
+        ax.set_xlabel(f'{attribute1}')
+        ax.set_ylabel(f'{attribute2}')
+        ax.set_title(f'Scatter Plot of {attribute1} and {attribute2} ')
+        return fig
 
     def create_story_bar(self, season, category):
         category_data = self.df[(self.df['Category'] == category) & (self.df['Season'] == season)]
@@ -67,6 +76,45 @@ class SeasonalTrendModel:
         ax.set_ylabel(f'Number of {item} Sold')
         for tick in ax.get_xticklabels():
             tick.set_rotation(0)
+        return fig
+
+    def descriptive_stats(self, attribute):
+        data = self.df[attribute]
+        descriptive = data.describe()
+        return descriptive
+
+    def histogram_more_graph(self, attribute):
+        fig, ax = plt.subplots()
+        self.df[attribute].plot(kind='hist', bins=20, color='green')
+        ax.set_title(f'{attribute} Distribution')
+        ax.set_xlabel(f'{attribute}')
+        ax.set_ylabel(f'Frequency')
+        return fig
+
+    def bar_more_graph(self, attribute):
+        fig, ax = plt.subplots()
+        self.df[attribute].value_counts().plot(kind='bar', color='skyblue')
+        ax.set_title(f'{attribute} Distribution')
+        ax.set_xlabel(f'{attribute}')
+        ax.set_ylabel(f'Frequency')
+        for tick in ax.get_xticklabels():
+            tick.set_rotation(45)
+        return fig
+
+    def pie_more_graph(self, attribute):
+        fig, ax = plt.subplots()
+        self.df[attribute].value_counts().plot(kind='pie', autopct='%1.1f%%', startangle=90)
+
+        ax.set_title(f'{attribute} Distribution')
+        ax.axis('count')
+        return fig
+
+    def scatter_more_graph(self, attribute1, attribute2):
+        fig, ax = plt.subplots()
+        ax.scatter(self.df[attribute1], self.df[attribute2])
+        ax.set_xlabel(f'{attribute1}')
+        ax.set_ylabel(f'{attribute2}')
+        ax.set_title(f'Scatter Plot of {attribute1} and {attribute2} ')
         return fig
 
 
