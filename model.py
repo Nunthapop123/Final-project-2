@@ -23,7 +23,7 @@ class SeasonalTrendModel:
         ax.set_ylabel('Frequency')
         return fig
 
-    def create_story_pie(self,season):
+    def create_story_pie(self, season):
         season_data = self.df[self.df['Season'] == season]
         category_distribution = season_data['Category'].value_counts(normalize=True)
         fig, ax = plt.subplots()
@@ -41,6 +41,18 @@ class SeasonalTrendModel:
         data = season_data['Purchase Amount (USD)']
         descriptive = data.describe()
         return descriptive
+
+    def create_story_bar(self, season, category):
+        category_data = self.df[(self.df['Category'] == category) & (self.df['Season'] == season)]
+        category_item_sale = category_data.groupby('Item Purchased').size()
+        fig, ax = plt.subplots()
+        category_item_sale.plot(kind='bar',color='skyblue')
+        ax.set_title(f'Sales of {category} Items in {season} Season')
+        ax.set_xlabel(f'{category} Item')
+        ax.set_ylabel('Number of Sales')
+        # ax.xticks(rotation=45)
+        # ax.tight_layout()
+        return fig
 
 
 if __name__ == '__main__':
