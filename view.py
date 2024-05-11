@@ -483,7 +483,6 @@ class MoreGraph(ctk.CTkToplevel):
             self.compute_button.configure(command=self.create_histogram_more_graph)
         elif graph == 'Bar graph':
             self.clear_combo()
-            self.season_combobox_layout()
             self.attribute.configure(values=['Gender', 'Category', 'Season', 'Subscription Status', 'Payment Method',
                                              'Frequency of Purchases'])
             self.compute_button.configure(command=self.create_bar_more_graph)

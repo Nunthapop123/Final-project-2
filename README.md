@@ -9,6 +9,16 @@ to help users with decision-making in restocking or make some promotion of it.
 The Customer Shopping Trends Dataset 
 from [kaggle.com](https://www.kaggle.com/datasets/iamsouravbanerjee/customer-shopping-trends-dataset)  
 
+## Main Features
+- 2 Page
+  1. Analyze Storytelling page 
+ 
+  2.  General information - This page contains some description and default graph
+  Users can see which items are selling well in the season by the visualization.
+  Users can see other information that may not be related to the season like overall of it
+  Ex. How many items of different colors were sold?
+
+
 ## Example UI
 
 ![home_page](Screenshots/Home.png)
@@ -34,3 +44,5 @@ from [kaggle.com](https://www.kaggle.com/datasets/iamsouravbanerjee/customer-sho
 
 4. Run the project
 > python main.py
+> 
+
